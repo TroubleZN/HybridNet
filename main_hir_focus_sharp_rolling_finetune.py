@@ -34,10 +34,10 @@ def loss_fn(pred, true, method="RRMSE"):
     if method == "RMSE":
         return ((pred - true) ** 2).mean().sqrt()
     if method == "RRMSE3":
-        return ((pred - true) ** 2).mean().sqrt() / pred.mean().clamp(min=1e-6)
+        return ((pred - true) ** 2).mean().sqrt() / pred.mean().detach().clamp(min=1e-6)
     top_k = max(1, int(len(true) * 0.2))
     top_idx = torch.topk(true, top_k).indices
-    return ((pred - true) ** 2).mean().sqrt() / true[top_idx].mean().clamp(min=1e-6)
+    return ((pred - true) ** 2).mean().sqrt() / true[top_idx].mean().detach().clamp(min=1e-6)
 
 
 def predicted_ft_day(stage_curve, temperature=20.0):

@@ -29,7 +29,7 @@ def rmse_metric(y_true, y_pred):
 def rrmse_metric(y_true, y_pred):
     top_k = max(1, int(len(y_true) * 0.2))
     top_idx = torch.topk(y_true, top_k).indices
-    return rmse_metric(y_true, y_pred) / y_true[top_idx].mean().clamp(min=1e-6)
+    return rmse_metric(y_true, y_pred) / y_true[top_idx].mean().detach().clamp(min=1e-6)
 
 
 def success_rate_at_threshold(pred, true, threshold):

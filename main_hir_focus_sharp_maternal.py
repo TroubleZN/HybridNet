@@ -155,13 +155,13 @@ def loss_fn(pred, true, method="RRMSE"):
     if method == "RMSE":
         return ((pred - true) ** 2).mean().sqrt()
     if method == "RRMSE3":
-        return ((pred - true) ** 2).mean().sqrt() / pred.mean().clamp(min=1e-6)
+        return ((pred - true) ** 2).mean().sqrt() / pred.mean().detach().clamp(min=1e-6)
 
     top_ratio = 0.2
     top_k = max(1, int(len(true) * top_ratio))
     top_idx = torch.topk(true, top_k).indices
     rmse = ((pred - true) ** 2).mean().sqrt()
-    top_pred_mean = true[top_idx].mean().clamp(min=1e-6)
+    top_pred_mean = true[top_idx].mean().detach().clamp(min=1e-6)
     return rmse / top_pred_mean
 
 

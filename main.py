@@ -198,7 +198,7 @@ def loss_fn(pred, true, weight=False, method='RRMSE'):
         loss = torch.tensor(0.0, device=ph["stage"].device, requires_grad=True)
     elif method == 'weighted':
         weights = true.sqrt() / true.sqrt().mean()
-        loss = (((pred - true) ** 2) * weights).mean().sqrt()/pred.max()
+        loss = (((pred - true) ** 2) * weights).mean().sqrt()/pred.max().detach()
     elif method == 'Pearson':
         loss = 1 - pearson_corr(true, pred)
     elif method == 'RMSE':
@@ -207,7 +207,7 @@ def loss_fn(pred, true, weight=False, method='RRMSE'):
         epsilon = 1e-6
         loss = torch.sqrt((((pred - true) / (true + epsilon)) ** 2).mean())
     elif method == 'RRMSE3':
-        loss = ((pred - true) ** 2).mean().sqrt() / pred.mean()
+        loss = ((pred - true) ** 2).mean().sqrt() / pred.mean().detach()
     else:
         top_ratio = 0.2
         top_k = int(len(true) * top_ratio)
@@ -215,7 +215,7 @@ def loss_fn(pred, true, weight=False, method='RRMSE'):
 
         rmse = ((pred - true) ** 2).mean().sqrt()
 
-        top_pred_mean = true[top_idx].mean()
+        top_pred_mean = true[top_idx].mean().detach()
         loss = rmse / top_pred_mean
         # loss = ((pred - true) ** 2).mean().sqrt() / true.mean()
     return loss
